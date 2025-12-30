@@ -1,4 +1,4 @@
-using AuthServer.Migration;
+using AuthServer.Main;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

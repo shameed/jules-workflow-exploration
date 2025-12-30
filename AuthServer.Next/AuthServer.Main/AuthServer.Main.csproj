@@ -16,8 +16,4 @@
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AuthServer.Migration\AuthServer.Migration.csproj" />
-  </ItemGroup>
-
 </Project>
