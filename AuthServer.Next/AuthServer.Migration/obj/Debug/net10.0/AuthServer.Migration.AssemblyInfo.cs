@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AuthServer.Migration")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+401b13c76d260200ae5d0eb4368ddb72c0ec4957")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4f3e503d9a809c253b74ba0584c31bd1a9006caf")]
 [assembly: System.Reflection.AssemblyProductAttribute("AuthServer.Migration")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AuthServer.Migration")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
