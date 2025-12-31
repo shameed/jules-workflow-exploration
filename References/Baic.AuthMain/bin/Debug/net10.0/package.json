@@ -1,0 +1,31 @@
+{
+  "name": "spriska.authmain",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "bootstrap": "^5.2.3",
+    "cssnano": "^6.0.0",
+    "del": "^6.1.1",
+    "feather-icons": "^4.29.0",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-postcss": "^9.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
+    "gulp-uglify": "^3.0.2",
+    "gulp-uglify-es": "^3.0.0",
+    "jquery": "^3.7.0",
+    "merge-stream": "^2.0.0",
+    "qrcode": "^1.5.3",
+    "sass": "^1.60.0"
+  }
+}

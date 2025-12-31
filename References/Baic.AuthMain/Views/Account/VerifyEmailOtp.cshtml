@@ -1,0 +1,43 @@
+﻿@model AuthCodeViewModel;
+@{
+
+    var UserEmail = ViewData["UserEmail"];
+}
+
+<div class="inspire-layout h-100">
+    <div class="inspire-layout-content h-100 login-bg ">
+        <div class="inspire-layout-content-inner">
+            <div class="d-flex flex-row-reverse p-5">
+                <div class="card w-25">
+                    <div class="card-body p-5">
+                        <h4>Verify OTP</h4>
+                        <p><strong>Please enter the code sent to your email id "@UserEmail".</strong></p>
+                        <form asp-route="VerifyEmailOtp">
+                            <div class="mb-3">
+                                <input type="hidden" asp-for="UserName" />
+                                <input type="hidden" asp-for="MfaStatus" />
+                                <input type="hidden" asp-for="ReturnUrl" />
+                                <div class="inspire-input-group-secondary">
+                                    <input asp-for="Code" type="text" class="form-control" placeholder="Code" aria-label="Code"  autofocus>
+                                    <button name="verify" type="submit">Verify</button>
+                                </div>
+                            </div>
+
+                            <div asp-validation-summary="All"></div>
+                        </form>
+                    </div>
+                    <div>
+                        <div class="text-primary text-center fw-bold">
+                            <a style="pointer-events: none; display: inline-block;color: gray" href="~/pdf/49P5831-Website-Terms-of-Use-2022.pdf" target="_blank" rel="noopener noreferrer">Terms Of Use</a>
+                        </div>
+                        <hr class="text-primary" style="border: solid 0.1px !important;">
+                        <div class="text-primary text-center">
+                            <h3>SimpleInspire</h3>
+                            <p class="fs-6"> from Simplesolve</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

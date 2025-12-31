@@ -1,0 +1,156 @@
+﻿@using Baic.AuthMain.Resources
+@model Baic.AuthMain.Models.AccountViewModels.LoginViewModel
+@inject SignInManager<IdentityUserExtended> SignInManager
+
+@inject LocService SharedLocalizer
+@{
+    ViewData["Title"] = @SharedLocalizer.GetLocalizedHtmlString("ACCOUNT_LOGIN");
+}
+
+<div class="inspire-layout h-100">
+    <div class="inspire-layout-content h-100 login-bg ">
+        <div class="inspire-layout-content-inner">
+            <div class="d-flex flex-row-reverse p-5">
+                <div class="card w-25">
+                    <div class="card-body p-5">
+                        <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@Model.ReturnUrl" method="post" class="form-horizontal">
+
+                            <div class="mb-3">
+                                <input asp-for="Username" class="inspire-form-control" placeholder="@SharedLocalizer.GetLocalizedHtmlString("USERID")" />
+                            </div>
+                            <div class="mb-3">
+                                <input asp-for="Password" class="inspire-form-control" type="password" placeholder="@SharedLocalizer.GetLocalizedHtmlString("PASSWORD")" />
+                                <span toggle="#Password" class="loginShowPassword small" id="showPassword"
+                                      title="Show/Hide Password">
+                                    <i data-feather="eye"></i>
+                                </span>
+                            </div>
+                            <div class="mb-3 inspire-form-check">
+                                <input asp-for="RememberLogin" type="checkbox" />
+                                <label>@SharedLocalizer.GetLocalizedHtmlString("REMEMBER_ME")</label>
+                            </div>
+                            <div class="mb-2 text-center">
+                                <button type="submit" class="inspire-btn-secondary px-5">@SharedLocalizer.GetLocalizedHtmlString("ACCOUNT_LOGIN")</button>
+                            </div>
+                            <p class="mb-2 text-center">
+                                <a asp-action="ForgotPassword">@SharedLocalizer.GetLocalizedHtmlString("FORGOT_PASSWORD")</a>
+                            </p>
+                            <div asp-validation-summary="All"></div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <div class="text-primary text-center fw-bold">
+                            <a style="pointer-events: none; display: inline-block;color: gray" href="~/pdf/49P5831-Website-Terms-of-Use-2022.pdf" target="_blank" rel="noopener noreferrer">Terms Of Use</a>
+                        </div>
+                        <hr class="text-primary" style="border: solid 0.1px !important;">
+                        <div class="text-primary text-center">
+                            <p class="font-size:16px !important;">SimpleInspire from Simplesolve</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.ExternalProviders.Any())
+        {
+            <div class="col col-md-6">
+                <div class="panel-body">
+                    <ul class="list-inline">
+                        @foreach (var provider in Model.ExternalProviders)
+                        {
+                            <li>
+                                <a class="btn btn-primary"
+                                   asp-action="ExternalLogin"
+                                   asp-route-provider="@provider.AuthenticationScheme"
+                                   asp-route-returnUrl="@Model.ReturnUrl">
+                                    @provider.DisplayName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+@section scripts {
+
+    <script>
+        if (document.msCapsLockWarningOff == false) {
+            document.msCapsLockWarningOff = true;
+        }
+        $(document).ready(function () {
+
+            $(function () {
+                $('#Username').bind('input', function () {
+                    $(this).val(function (_, v) {
+                        return v.replace(/\s+/g, '');
+                    });
+                });
+            });
+        });
+
+        // Show caps lock warning
+        var passwordInput = document.getElementById("Password");
+
+        passwordInput.addEventListener("keyup", function (event) {
+            // If "caps lock" is pressed, display the warning text
+            if (event.getModifierState("CapsLock") && $('#Password').val().length > 0) {
+                $('#Password').attr('data-title', 'Caps lock is ON');
+                $('#Password').tooltip('show');
+            } else {
+                $('#Password').attr('data-title', '');
+                $('#Password').tooltip('hide');
+            }
+        });
+    </script>
+    <script>
+        feather.replace();
+        jQuery("#showPassword").click(function () {
+            var input = jQuery(jQuery(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                jQuery(this).html("<i data-feather=\"eye-off\" ></i>");
+                feather.replace();
+                input.attr("type", "text");
+            } else {
+                jQuery(this).html("<i data-feather=\"eye\"></i>");
+                feather.replace();
+                input.attr("type", "password");
+            }
+        });
+
+        jQuery("#showNewPassword").click(function () {
+            var input = jQuery(jQuery(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                jQuery(this).html("<i data-feather=\"eye-off\" ></i>");
+                feather.replace();
+                input.attr("type", "text");
+            } else {
+                jQuery(this).html("<i data-feather=\"eye\"></i>");
+                feather.replace();
+                input.attr("type", "password");
+            }
+        });
+
+        jQuery("#showConfirmPassword").click(function () {
+            var input = jQuery(jQuery(this).attr("toggle"));
+            if (input.attr("type") == "password") {
+                jQuery(this).html("<i data-feather=\"eye-off\" ></i>");
+                feather.replace();
+                input.attr("type", "text");
+            } else {
+                jQuery(this).html("<i data-feather=\"eye\"></i>");
+                feather.replace();
+                input.attr("type", "password");
+            }
+        });
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,786 @@
+// Settings
+$min-contrast-ratio: 2.5;
+
+// Color-yiq
+$color-contrast-dark: black !default;
+$color-contrast-light: white !default;
+$min-contrast-ratio: 180 !default;
+
+// 1. Include functions first (so you can manipulate colors, SVGs, calc, etc)
+@import '../node_modules/bootstrap/scss/functions';
+
+// 2. Include any default variable overrides here
+@import "inspire-variables.scss";
+$theme-colors: ( 'primary': $primary, 'secondary': $secondary, 'success': $success, 'info': $info, 'warning': $warning, 'danger': $danger, 'light': $light, 'dark': $dark, );
+@import './inspire-mixins';
+
+// 3. Include remainder of required Bootstrap stylesheets
+@import '../node_modules/bootstrap/scss/variables';
+
+// 4. Include any default map overrides here
+
+// 5. Include remainder of required parts
+@import '../node_modules/bootstrap/scss/maps';
+@import '../node_modules/bootstrap/scss/mixins';
+@import '../node_modules/bootstrap/scss/root';
+
+// 6. Optionally include any other parts as needed
+@import '../node_modules/bootstrap/scss/utilities';
+@import '../node_modules/bootstrap/scss/reboot';
+@import '../node_modules/bootstrap/scss/type';
+@import '../node_modules/bootstrap/scss/images';
+@import '../node_modules/bootstrap/scss/containers';
+@import '../node_modules/bootstrap/scss/grid';
+@import '../node_modules/bootstrap/scss/helpers';
+@import '../node_modules/bootstrap/scss/nav';
+@import '../node_modules/bootstrap/scss/buttons';
+@import '../node_modules/bootstrap/scss/card';
+@import '../node_modules/bootstrap/scss/forms';
+@import '../node_modules/bootstrap/scss/tables';
+@import '../node_modules/bootstrap/scss/alert';
+// 7. Optionally include utilities API last to generate classes based on the Sass map in `_utilities.scss`
+@import '../node_modules/bootstrap/scss/utilities/api';
+
+// 8. Bootstrap override
+html, body {
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+}
+
+
+.dropdown-toggle::after {
+    margin-left: 0.4em !important;
+    vertical-align: 0.15em !important;
+}
+
+// inspire layout classes
+.inspire-layout {
+    min-height: 0 !important;
+}
+
+.inspire-layout-header {
+    & .ribbon {
+        @extend .d-flex;
+        @extend .flex-md-row;
+        @extend .flex-column;
+        @extend .justify-content-md-between;
+        @extend .px-2;
+        @extend .py-1;
+    }
+
+    & .title {
+        @extend .pt-1;
+
+        & h2,
+        h3,
+        h4,
+        h6 {
+            margin: 0 !important;
+            font-size: $font-size-medium !important;
+            font-weight: 700 !important;
+            color: $primary !important;
+        }
+    }
+}
+
+.inspire-layout-content {
+    @extend .inspire-scroll;
+
+    & .inspire-layout-content-inner {
+        @extend .p-2;
+        @extend .d-flex;
+        @extend .flex-column;
+        @extend .h-100;
+    }
+}
+
+.inspire-layout-sider {
+    & .inspire-layout-sider-inner {
+        @extend .h-100;
+        @extend .inspire-scroll;
+        @extend .p-2;
+        @extend .pe-0;
+        @extend .border-end;
+        @extend .border-2;
+        @extend .border-primary;
+    }
+}
+
+.inspire-layout-footer {
+    .ribbon {
+        @extend .d-flex;
+        @extend .flex-md-row;
+        @extend .flex-column;
+        @extend .justify-content-md-between;
+    }
+
+    .btn {
+        @extend .rounded-0;
+        font-size: $font-size-base !important;
+        font-weight: 700 !important;
+    }
+}
+
+.inspire-goose-menu {
+    @extend .nav;
+    @extend .nav-pills;
+    @extend .flex-column;
+
+    & .nav-link {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-top-left-radius: 0.5rem !important;
+        border-bottom-left-radius: 0.5rem !important;
+        padding: 0.5rem 0.7rem !important;
+        font-size: $font-size-base !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+        @extend .border;
+        border-right: 0 !important;
+        color: $primary !important;
+
+        &.active {
+            background-color: $primary !important;
+            color: color-contrast($primary) !important;
+            border-color: $primary !important;
+        }
+
+        &.disabled {
+            color: $light !important;
+        }
+    }
+}
+
+.inspire-menu {
+    @extend .nav;
+    @extend .flex-row;
+
+    & .nav-item {
+        @extend .mx-1;
+
+        &:first-child {
+            @extend .ms-0;
+        }
+    }
+
+    & .nav-link {
+        @extend .px-2;
+        @extend .py-1;
+        line-height: 2.4 !important;
+        height: 34px !important;
+        font-weight: bold !important;
+        color: $primary !important;
+        background-color: $gray-200 !important;
+        border-bottom: 2px solid transparent !important;
+
+        &.active {
+            background-color: $primary !important;
+            color: color-contrast($primary) !important;
+            border-bottom: 2px solid $primary !important;
+        }
+
+        &:hover {
+            border-bottom: 2px solid $primary !important;
+        }
+    }
+
+    &.tabs {
+        @extend .nav-tabs;
+
+        & .nav-link {
+            &.active {
+                background-color: $primary !important;
+                color: color-contrast($primary) !important;
+                border-bottom: 2px solid $primary !important;
+            }
+
+            &:hover {
+                border-bottom: 2px solid $primary !important;
+            }
+        }
+    }
+
+    &.pills {
+        @extend .nav-pills;
+
+        & .nav-link {
+            &.active {
+                background-color: $primary !important;
+                color: color-contrast($primary) !important;
+                border-bottom: 2px solid $primary !important;
+            }
+
+            &:hover {
+                border-bottom: 2px solid $primary !important;
+            }
+        }
+    }
+
+    &.wizard {
+        @extend .nav-pills;
+
+        & .nav-item:first-child {
+            & .nav-link {
+                @extend .rounded-start;
+
+                &::before {
+                    border: transparent !important;
+                }
+            }
+        }
+
+        & .nav-link {
+            border-radius: 0 !important;
+            position: relative !important;
+            padding-left: calc(17px + 0.5rem) !important;
+            padding-right: calc(17px + 0.5rem) !important;
+
+            &::before {
+                width: 0 !important;
+                height: 0 !important;
+                position: absolute !important;
+                content: '' !important;
+                top: 0 !important;
+                left: 0 !important;
+                border-top: 17px solid transparent !important;
+                border-left: 17px solid $white !important;
+                border-bottom: 17px solid transparent !important;
+                background-color: transparent !important;
+            }
+
+            &::after {
+                width: 0 !important;
+                height: 0 !important;
+                position: absolute !important;
+                content: '' !important;
+                top: 0 !important;
+                right: -17px !important;
+                border-top: 17px solid transparent !important;
+                border-left: 17px solid $gray-200 !important;
+                border-bottom: 17px solid transparent !important;
+                z-index: 2 !important;
+            }
+
+            &.active {
+                background-color: $primary !important;
+                color: color-contrast($primary) !important;
+                border-bottom: 2px solid $primary !important;
+
+                &::after {
+                    border-left: 17px solid $primary !important;
+                }
+            }
+
+            &:hover {
+                border-bottom-color: transparent !important;
+            }
+        }
+    }
+}
+
+.inspire-nav-button {
+    @extend .nav;
+    @extend .nav-pills;
+    @extend .flex-row;
+
+    & .nav-link {
+        &.disabled {
+            color: $light;
+        }
+    }
+}
+
+.inspire-button-group {
+    & .btn {
+        @extend .btn-sm;
+        font-size: $font-size-base;
+        @extend .me-1;
+        padding: 0 0.25rem 0.15rem;
+
+        &:last-child {
+            @extend .me-0;
+        }
+    }
+}
+
+
+.inspire-card {
+    @extend .card;
+    @extend .h-100;
+
+    & .inspire-card-header {
+        @extend .card-header;
+        @extend .d-flex;
+        @extend .flex-row;
+        @extend .align-items-center;
+        padding: 0.35rem;
+
+        & .card-title {
+            @extend .card-title;
+            @extend .me-2;
+            font-size: $font-size-base;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        & .card-action {
+            @extend .d-flex;
+            @extend .flex-grow-1;
+
+            &.left {
+                @extend .justify-content-start;
+            }
+
+            &.right {
+                @extend .justify-content-end;
+            }
+        }
+    }
+
+    & .inspire-card-body {
+        @extend .card-body;
+        padding: 0.35rem;
+    }
+
+    & .inspire-card-footer {
+        @extend .card-footer;
+        padding: 0.35rem;
+    }
+}
+
+// Buttons & Links
+
+.inspire-btn {
+    @extend .btn;
+    @extend .btn-sm;
+    font-size: $font-size-base !important;
+}
+
+.inspire-btn-primary {
+    @extend .inspire-btn;
+    @extend .btn-primary;
+    color: color-contrast($primary) !important;
+}
+
+.inspire-btn-secondary {
+    @extend .inspire-btn;
+    @extend .btn-secondary;
+    color: color-contrast($secondary) !important;
+}
+
+.inspire-btn-danger {
+    @extend .inspire-btn;
+    @extend .btn-danger;
+    color: color-contrast($danger) !important;
+}
+
+.inspire-btn-dark {
+    @extend .inspire-btn;
+    @extend .btn-dark;
+    color: color-contrast($dark) !important;
+}
+
+.inspire-btn-light {
+    @extend .inspire-btn;
+    background-color: $light;
+    color: color-contrast($light) !important;
+}
+
+.inspire-btn-outline-primary {
+    @extend .inspire-btn;
+    @extend .btn-outline-primary;
+    color: $primary;
+    background-color: transparent;
+}
+
+.inspire-btn-outline-light{
+    @extend .inspire-btn;
+    @extend .btn-outline-light;
+    color: $gray-500;
+    background-color: transparent;
+}
+
+.inspire-btn-secondary:disabled {
+    @extend .inspire-btn;
+    @extend .btn-secondary;
+    color: $white !important;
+}
+
+.inspire-scroll {
+    @include scrollbars(10px, $gray-300);
+    @extend .overflow-auto;
+}
+
+.inspire-input-group {
+    @extend .input-group;
+    @extend .input-group-sm;
+    @extend .mb-1;
+
+    & .form-control {
+        @extend .form-control;
+        @extend .form-control-sm;
+        @extend .p-1;
+        font-size: $font-size-base !important;
+
+        &.ng-invalid {
+            border-left-width: 3px;
+            border-left-color: $red;
+        }
+    }
+
+    & button {
+        @extend .btn;
+        @extend .btn-outline-secondary;
+    }
+}
+
+.inspire-input-group-primary {
+    @extend .input-group;
+    @extend .input-group-sm;
+    @extend .mb-1;
+
+    & .form-control {
+        @extend .form-control;
+        @extend .form-control-sm;
+        @extend .p-1;
+        font-size: $font-size-base !important;
+
+        &.ng-invalid {
+            border-left-width: 3px;
+            border-left-color: $red;
+        }
+    }
+
+    & button {
+        @extend .inspire-btn-primary;
+    }
+}
+
+.inspire-input-group-secondary {
+    @extend .input-group;
+    @extend .input-group-sm;
+    @extend .mb-1;
+
+    & .form-control {
+        @extend .form-control;
+        @extend .form-control-sm;
+        @extend .p-1;
+        font-size: $font-size-base !important;
+
+        &.ng-invalid {
+            border-left-width: 3px;
+            border-left-color: $red;
+        }
+    }
+
+    & button {
+        @extend .inspire-btn-secondary;
+    }
+}
+
+.valid {
+    border-left-width: 0px !important;
+    border-left: 1px solid #bbb !important;
+}
+
+.invalid {
+    border-left-width: 3px !important;
+    border-left-color: $red !important;
+}
+
+.inspire-fd-portion {
+    width: 43px !important;
+}
+
+.inspire-ln-fd {
+    width: 80px !important;
+}
+
+
+// Forms
+
+.inspire-form-control {
+    @extend .form-control;
+    @extend .form-control-sm;
+    @extend .p-1;
+    font-size: $font-size-base;
+    height: 1.35rem;
+    padding: .25rem .5rem !important;
+
+    &.ng-invalid {
+        border-left-width: 3px;
+        border-left-color: $red;
+    }
+}
+
+.inspire-form-check {
+    @extend .form-check;
+    padding-left: 1.5em;
+
+    input {
+        @extend .form-check-input;
+    }
+
+    label {
+        @extend .form-check-label;
+        font-size: $font-size-base;
+    }
+}
+
+
+
+.inspire-form-group {
+    @extend .d-flex;
+    @extend .mb-1;
+    @extend .flex-fill;
+
+    & .form-label {
+        @extend .d-block;
+        @extend .flex-shrink-0;
+        margin: 0;
+    }
+
+    & .form-control {
+        @extend .form-control;
+        @extend .form-control-sm;
+        @extend .p-1;
+        font-size: $font-size-base;
+        width: 100%;
+        // height: 1.5rem !important;
+        padding: 0 0.05rem !important;
+
+        &.ng-invalid {
+            border-left-width: 3px;
+            border-left-color: $red;
+        }
+    }
+
+    &.d-horizontal {
+        @extend .flex-row;
+        @extend .align-items-start;
+
+        & .form-btn {
+            @extend .inspire-btn;
+            @extend .btn-secondary;
+        }
+
+        & .form-label {
+            @extend .text-end;
+            @extend .text-truncate;
+            width: 95px;
+            padding-right: 0.5rem;
+        }
+
+        & .form-control {
+            @extend .flex-fill;
+            width: 100%;
+        }
+
+        & .form-control-group {
+            @extend .d-flex;
+            @extend .flex-row;
+            @extend .flex-fill;
+
+            & :last-child {
+                @extend .me-0;
+            }
+
+            & .inspire-input-group {
+                @extend .flex-nowrap;
+                @extend .input-group;
+                @extend .input-group-sm;
+                @extend .me-2;
+                @extend .mb-0;
+
+                & .form-control {
+                    @extend .me-0;
+                }
+
+                & button {
+                    @extend .btn;
+                    @extend .btn-sm;
+                    font-size: $font-size-base !important;
+                    height: auto;
+                    padding: 0 0.15rem 0.07rem !important;
+                    @extend .btn-outline-light;
+                }
+
+                &:last-child {
+                    @extend .me-0;
+                }
+            }
+
+            & .inspire-radio {
+                @extend .form-check;
+
+                & label {
+                    @extend .form-check-label;
+                }
+
+                & input[type='radio'] {
+                    @extend .form-check-input;
+                }
+            }
+
+            & .form-control {
+                @extend .me-2;
+
+                &:last-child {
+                    @extend .me-0;
+                }
+            }
+        }
+    }
+
+    &.d-vertical {
+        @extend .flex-column;
+
+        & .form-btn,
+        & .form-label {
+            @extend .text-truncate;
+            text-align: left;
+            width: auto;
+            margin-bottom: 0.25rem;
+        }
+
+        & .form-control {
+            width: auto;
+        }
+
+        &.number {
+            & .form-control {
+                text-align: right;
+            }
+
+            & .form-label {
+                text-align: left;
+            }
+        }
+    }
+}
+
+.inspire-animate-our_content {
+    /* Initially we don't want any height, and we want the contents to be hidden */
+    max-height: 28px;
+    overflow: hidden;
+    /* Set our transitions up. */
+    -webkit-transition: max-height 0.8s;
+    -moz-transition: max-height 0.8s;
+    transition: max-height 0.8s;
+}
+
+.inspire-animate-outside_box:hover .inspire-animate-our_content {
+    /* On hover, set the max-height to something large. In this case there's an obvious limit. */
+    @extend .card-body;
+    padding: 0.35rem;
+}
+
+.inspire-table {
+    @extend .table;
+    @extend .table-sm;
+    @extend .table-borderless;
+    @extend .mb-0;
+    @extend .text-nowrap;
+    @extend .h-100;
+
+    & .dice-cell {
+        width: 30px !important;
+    }
+
+    & .dice-cell-claims {
+        width: 30px !important;
+    }
+
+    & .feature-no {
+        width: 23px !important;
+    }
+
+    & .feature-status {
+        width: 31px !important;
+    }
+
+    & .feature-dt-closed {
+        width: 41px !important;
+    }
+
+    & .feature-cvg-part {
+        width: 55px !important;
+    }
+
+    & .feature-ins-loc {
+        width: 166px !important;
+    }
+
+    & .feature-part-type {
+        width: 150px !important;
+    }
+
+    & .feature-part-dt {
+        width: 89px !important;
+    }
+
+    & .feature-part-type {
+        width: 150px !important;
+    }
+
+    & .dice-cell-part {
+        width: 30px !important;
+    }
+
+    & .dice-cell-recov {
+        width: 30px !important;
+    }
+
+    th,
+    td {
+        @extend .text-truncate;
+    }
+
+    tbody {
+        border-top: 2px solid #bbb;
+        display: block;
+        height: calc(100% - 25px);
+        @include scrollbars(10px, $gray-300);
+        overflow-y: scroll !important;
+    }
+
+    thead,
+    tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed; /* even columns width , fix width of table too*/
+    }
+
+    thead {
+        & th {
+            @extend .text-primary;
+            border-bottom: none;
+        }
+
+        width: calc(100% - 10px); /* scrollbar is average 1em/16px width, remove it from thead width */
+    }
+}
+
+.dice-cell-fm {
+    width: 15px !important;
+}
+
+.modal-with-newline .modal-content p.popUpBox {
+    white-space: pre-line !important;
+}
+
+
+.validation-summary-errors {
+    @extend .alert;
+    @extend .alert-danger;
+    padding: 10px;
+    border-radius: 0.2rem;
+    margin: 0px;
+
+    & ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+}
