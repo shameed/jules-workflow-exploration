@@ -1,0 +1,82 @@
+@model AuthServer.Main.ViewModels.Account.LoginViewModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-indigo">Welcome Back</h3>
+                    <p class="text-muted">Please sign in to continue</p>
+                </div>
+
+                <form id="account" method="post" onsubmit="disableSubmit()">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Username" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+                        <label asp-for="Username" class="form-label"></label>
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                        <label asp-for="Password" class="form-label"></label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" asp-for="RememberLogin" />
+                        <label class="form-check-label" asp-for="RememberLogin">
+                            @Html.DisplayNameFor(m => m.RememberLogin)
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button id="login-submit" type="submit" class="btn btn-indigo btn-lg">
+                            <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            <span id="btn-text">Log in</span>
+                        </button>
+                    </div>
+                </form>
+
+                 @if (Model.VisibleExternalProviders.Any())
+                {
+                    <div class="mt-4">
+                        <hr />
+                        <div class="text-center mb-3">Or sign in with</div>
+                         <form asp-action="ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-2">
+                            @foreach (var provider in Model.VisibleExternalProviders)
+                            {
+                                <button type="submit" class="btn btn-outline-secondary" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account">
+                                    @provider.DisplayName
+                                </button>
+                            }
+                        </form>
+                    </div>
+                }
+
+                <div class="mt-3 text-center">
+                     <a asp-action="ForgotPassword" class="text-decoration-none text-indigo">Forgot your password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function disableSubmit() {
+            var btn = document.getElementById('login-submit');
+            var spinner = document.getElementById('spinner');
+            var text = document.getElementById('btn-text');
+
+            btn.disabled = true;
+            spinner.classList.remove('d-none');
+            text.textContent = " Signing in...";
+        }
+    </script>
+}
