@@ -1,4 +1,5 @@
 using System.Text.Encodings.Web;
+using AuthServer.Main.Services;
 using AuthServer.Main.ViewModels.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,13 +15,13 @@ public class AccountController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly IEmailSender<ApplicationUser> _emailSender;
+    private readonly IEmailSender _emailSender;
     private readonly ILogger<AccountController> _logger;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IEmailSender<ApplicationUser> emailSender,
+        IEmailSender emailSender,
         ILogger<AccountController> logger)
     {
         _userManager = userManager;
@@ -314,8 +315,11 @@ public class AccountController : Controller
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, protocol: Request.Scheme);
 
-            await _emailSender.SendEmailAsync(user, "Reset Password",
-                $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                await _emailSender.SendEmailAsync(user.Email, "Reset Password",
+                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+            }
 
             return RedirectToAction(nameof(ForgotPasswordConfirmation));
         }
