@@ -39,9 +39,9 @@ builder.Services.AddOpenIddict()
     {
         // Enable the authorization, logout, token and userinfo endpoints.
         options.SetAuthorizationEndpointUris("connect/authorize")
-               .SetLogoutEndpointUris("connect/logout")
+               .SetEndSessionEndpointUris("connect/logout")
                .SetTokenEndpointUris("connect/token")
-               .SetUserinfoEndpointUris("connect/userinfo");
+               .SetUserInfoEndpointUris("connect/userinfo");
 
         // Enable the client credentials and authorization code flows.
         options.AllowClientCredentialsFlow()
@@ -55,8 +55,8 @@ builder.Services.AddOpenIddict()
         options.UseAspNetCore()
                .EnableTokenEndpointPassthrough()
                .EnableAuthorizationEndpointPassthrough()
-               .EnableLogoutEndpointPassthrough()
-               .EnableUserinfoEndpointPassthrough();
+               .EnableEndSessionEndpointPassthrough()
+               .EnableUserInfoEndpointPassthrough();
     })
 
     // Register the OpenIddict validation components.
