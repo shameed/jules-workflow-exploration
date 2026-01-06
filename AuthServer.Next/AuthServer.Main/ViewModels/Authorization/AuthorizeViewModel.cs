@@ -8,5 +8,5 @@ public class AuthorizeViewModel
     public string? ApplicationName { get; set; }
 
     [Display(Name = "Scope")]
-    public string? Scope { get; set; }
+    public string? Scopes { get; set; }
 }
