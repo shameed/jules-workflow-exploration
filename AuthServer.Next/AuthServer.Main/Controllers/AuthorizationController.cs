@@ -81,11 +81,11 @@ public class AuthorizationController : Controller
             // the authorization request can be approved without asking the user.
             case OpenIddictConstants.ConsentTypes.External when authorizations.Count > 0:
             case OpenIddictConstants.ConsentTypes.Implicit:
-            case OpenIddictConstants.ConsentTypes.Systematic when request.HasPrompt("none"):
+            case OpenIddictConstants.ConsentTypes.Systematic when request.GetPrompts().Contains("none"):
                 return await AcceptAuthorizationAsync(user, application, authorizations, request);
 
-            case OpenIddictConstants.ConsentTypes.Explicit when request.HasPrompt("none"):
-            case OpenIddictConstants.ConsentTypes.Systematic when !request.HasPrompt("none"):
+            case OpenIddictConstants.ConsentTypes.Explicit when request.GetPrompts().Contains("none"):
+            case OpenIddictConstants.ConsentTypes.Systematic when !request.GetPrompts().Contains("none"):
                 return Forbid(
                     authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
                     properties: new AuthenticationProperties(new Dictionary<string, string?>
@@ -100,7 +100,7 @@ public class AuthorizationController : Controller
                 return View(new AuthorizeViewModel
                 {
                     ApplicationName = await _applicationManager.GetDisplayNameAsync(application),
-                    Scope = request.Scope
+                    Scopes = request.Scope
                 });
         }
     }
