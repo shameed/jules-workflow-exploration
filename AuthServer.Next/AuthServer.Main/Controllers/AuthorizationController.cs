@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Primitives;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -78,11 +81,11 @@ public class AuthorizationController : Controller
             // the authorization request can be approved without asking the user.
             case OpenIddictConstants.ConsentTypes.External when authorizations.Count > 0:
             case OpenIddictConstants.ConsentTypes.Implicit:
-            case OpenIddictConstants.ConsentTypes.Systematic when request.HasPrompt(OpenIddictConstants.Prompts.None):
+            case OpenIddictConstants.ConsentTypes.Systematic when request.HasPrompt("none"):
                 return await AcceptAuthorizationAsync(user, application, authorizations, request);
 
-            case OpenIddictConstants.ConsentTypes.Explicit when request.HasPrompt(OpenIddictConstants.Prompts.None):
-            case OpenIddictConstants.ConsentTypes.Systematic when !request.HasPrompt(OpenIddictConstants.Prompts.None):
+            case OpenIddictConstants.ConsentTypes.Explicit when request.HasPrompt("none"):
+            case OpenIddictConstants.ConsentTypes.Systematic when !request.HasPrompt("none"):
                 return Forbid(
                     authenticationSchemes: OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
                     properties: new AuthenticationProperties(new Dictionary<string, string?>
@@ -159,8 +162,12 @@ public class AuthorizationController : Controller
         // Add the claims that will be persisted in the tokens.
         identity.AddClaim(OpenIddictConstants.Claims.Subject, await _userManager.GetUserIdAsync(user))
                 .AddClaim(OpenIddictConstants.Claims.Email, await _userManager.GetEmailAsync(user))
-                .AddClaim(OpenIddictConstants.Claims.Name, await _userManager.GetUserNameAsync(user))
-                .SetDestinations(GetDestinations);
+                .AddClaim(OpenIddictConstants.Claims.Name, await _userManager.GetUserNameAsync(user));
+
+        foreach (var claim in identity.Claims)
+        {
+            claim.SetDestinations(GetDestinations(claim));
+        }
 
         // Create a new authorization if one doesn't already exist.
         if (authorizations.Count == 0)
@@ -173,15 +180,15 @@ public class AuthorizationController : Controller
                 scopes: identity.GetScopes());
         }
 
+        identity.SetScopes(request.GetScopes());
+
         // Create a new authentication ticket holding the user identity.
         var ticket = new AuthenticationTicket(
             new ClaimsPrincipal(identity),
             new AuthenticationProperties(),
             OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
-        ticket.SetScopes(request.GetScopes());
-
-        return SignIn(ticket, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        return SignIn(new ClaimsPrincipal(identity), OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
     }
 
     [HttpPost("~/connect/token")]
@@ -225,7 +232,7 @@ public class AuthorizationController : Controller
 
             foreach (var claim in principal.Claims)
             {
-                claim.SetDestinations(GetDestinations);
+                claim.SetDestinations(GetDestinations(claim));
             }
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
