@@ -1,0 +1,24 @@
+﻿@using AuthServer.Main.Resources
+@inject LocService SharedLocalizer
+@model AuthServer.Main.Models.AccountViewModels.LogoutViewModel
+
+<div class="inspire-layout h-100 d-flex flex-column">
+    <div class="inspire-layout-content flex-fill h-100">
+        <div class="card text-center w-50 p-5 shadow-lg" style="margin: 200px auto;">
+            <div class="card-body">
+                <h3 class="card-title">  @SharedLocalizer.GetLocalizedHtmlString("WOULD_YOU_LIKE_TO_LOGOUT")</h3>
+
+                <p class="text-center">
+                    <form asp-action="Logout">
+                        <input type="hidden" name="logoutId" value="@Model.LogoutId" />
+                        <fieldset>
+                            <div class="form-group">
+                                <button class="btn btn-primary">@SharedLocalizer.GetLocalizedHtmlString("YES")</button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

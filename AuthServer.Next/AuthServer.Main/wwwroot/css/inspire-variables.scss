@@ -1,0 +1,116 @@
+$web-font-path: 'https://fonts.googleapis.com/css?family=Open+Sans:400,700';
+@import url($web-font-path);
+
+//
+// Color system
+//
+
+$white: #fff;
+$gray-100: #f8f9fa;
+$gray-200: #ddd;
+$gray-300: #ccc;
+$gray-400: #bbb;
+$gray-500: #adb5bd;
+$gray-600: #777;
+$gray-700: #444;
+$gray-800: #373a3c;
+$gray-900: #212529;
+$black: #000;
+
+$blue: #3b6caa;
+$indigo: #6610f2;
+$purple: #9b479f;
+$pink: #e83e8c;
+$red: #d9230f;
+$orange: #f99700;
+$yellow: #ffc107;
+$green: #469408;
+$teal: #20c997;
+$cyan: #029acf;
+
+$primary: $blue;
+$secondary: $orange;
+$success: $green;
+$info: $cyan;
+$warning: $yellow;
+$danger: $red;
+$light: $gray-200;
+$dark: $gray-700;
+
+//Body
+
+$body-bg: #fcfcfc;
+
+// Fonts
+$font-family-sans-serif: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+$font-family-base: $font-family-sans-serif;
+$font-size-small: 0.65rem;
+$font-size-base: 0.75rem;
+$font-size-medium: 0.85rem;
+$font-size-large: 1rem;
+
+// spacing
+$spacer: $font-size-base;
+
+// Grid columns
+$grid-columns: 24;
+$grid-gutter-width: 10px;
+
+// Components
+$line-height-lg: 1.5;
+$line-height-sm: 1.5;
+
+$border-width: 1px;
+$border-color: $gray-300;
+
+$border-radius: 0.25rem;
+$border-radius-lg: 0.3rem;
+$border-radius-sm: 0.2rem;
+
+$caret-width: 0.3em;
+
+$transition-base: all 0.2s ease-in-out;
+$transition-fade: opacity 0.15s linear;
+$transition-collapse: height 0.35s ease;
+
+$paragraph-margin-bottom: $font-size-base;
+
+// Dropdowns
+$dropdown-link-hover-color: $white;
+$dropdown-link-hover-bg: $primary;
+
+// Navs
+
+$nav-link-padding-y: 0.9rem;
+$nav-link-disabled-color: $gray-400;
+$nav-tabs-border-color: darken(#fff, 6.5%);
+
+// Navbar
+$navbar-dark-color: rgba($white, 0.75);
+$navbar-dark-hover-color: $white;
+
+// Pagination
+$pagination-border-color: $nav-tabs-border-color;
+$pagination-hover-color: $white;
+$pagination-hover-bg: $primary;
+$pagination-hover-border-color: $primary;
+$pagination-disabled-color: $gray-400;
+$pagination-disabled-border-color: $pagination-border-color;
+
+// Cards
+$card-border-color: $nav-tabs-border-color;
+
+// Popovers
+$popover-border-color: $nav-tabs-border-color;
+
+// Modals
+$modal-content-border-color: $nav-tabs-border-color;
+$modal-header-border-color: $nav-tabs-border-color;
+
+// Progress bars
+$progress-bar-color: $primary;
+
+// List group
+$list-group-border-color: $nav-tabs-border-color;
+$list-group-disabled-bg: $nav-tabs-border-color;

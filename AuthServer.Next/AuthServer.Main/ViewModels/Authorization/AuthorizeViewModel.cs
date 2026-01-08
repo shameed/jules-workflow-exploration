@@ -8,7 +8,5 @@ public class AuthorizeViewModel
     public string? ApplicationName { get; set; }
 
     [Display(Name = "Scope")]
-    public string? Scope { get; set; }
-
-    public IEnumerable<string> Scopes { get; set; } = new List<string>();
+    public string? Scopes { get; set; }
 }
