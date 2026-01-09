@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Baic.AuthMain.Models;
+using AuthServer.Main.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -8,10 +8,10 @@ namespace AuthServer.Main.Services
 
     public class OtpService
     {
-        private readonly UserManager<IdentityUserExtended> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private static readonly Random random = new Random();
 
-        public OtpService(UserManager<IdentityUserExtended> userManager)
+        public OtpService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }

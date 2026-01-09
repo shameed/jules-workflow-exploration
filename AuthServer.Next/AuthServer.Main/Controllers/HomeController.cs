@@ -25,7 +25,7 @@ public class HomeController : Controller
         var vm = new ErrorViewModel();
         // Simple error handling for now. OpenIddict usually handles errors via standard responses.
         // If we need specific error details, we'd inspect the request or use OpenIddict events.
-        vm.Error = new IdentityServer4.Models.ErrorMessage { Error = errorId }; // Temporary mapping or simply use string
+        vm.Error = errorId;
 
         return View("Error", vm);
     }
