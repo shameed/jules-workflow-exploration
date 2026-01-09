@@ -1,0 +1,49 @@
+﻿@import "inspire-variables.scss";
+
+
+.login-bg {
+    background-image: url("../images/spriska_v1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+
+
+svg.feather.feather-eye,
+svg.feather.feather-eye-off {
+    width: 15px;
+    height: 15px;
+    color: #666;
+}
+
+.showPassword {
+    cursor: pointer;
+    position: absolute;
+    top: 23px;
+    z-index: 1001;
+    right: 10px;
+}
+
+.loginShowPassword {
+    cursor: pointer;
+    position: absolute;
+    top: 23px;
+    z-index: 1001;
+    right: 10px;
+    margin-top: 60px;
+    margin-right: 35px;
+}
+.help-icon-password,
+.help-icon-questions {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    right: -18px;
+    top: 50%;
+}
+
+.feather-16 {
+    width: 16px;
+    height: 16px;
+}

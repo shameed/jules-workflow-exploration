@@ -1,0 +1,29 @@
+﻿@using AuthServer.Main.Resources
+@inject LocService SharedLocalizer
+@model AuthServer.Main.ViewModels.Account.LoggedOutViewModel
+
+<div class="inspire-layout h-100 d-flex flex-column">
+    <div class="inspire-layout-content flex-fill h-100">
+        <div class="card text-center w-50 p-5 shadow-lg" style="margin: 200px auto;">
+            <div class="card-body">
+                <h3 class="card-title">Logged out Successfully.</h3>
+                <hr />
+                <p class="card-text">
+                    You have successfully logged out
+                </p>
+
+                @if (Model.PostLogoutRedirectUri != null)
+                {
+                    <p>
+                        Click <a class="PostLogoutRedirectUri btn btn-sm btn-primary" href="@Model.PostLogoutRedirectUri">Login</a> to return to the
+                        <span>@Model.ClientName</span> application.
+                    </p>
+                }
+                @if (Model.SignOutIframeUrl != null)
+                {
+                    <iframe width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
+                }
+            </div>
+        </div>
+    </div>
+</div>

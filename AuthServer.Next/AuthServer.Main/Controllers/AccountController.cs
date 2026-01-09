@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OpenIddict.Abstractions;
 using OpenIddict.Client.AspNetCore;
+using AutoMapper;
+using Microsoft.Extensions.Localization;
+using AuthServer.Main.Models;
 
 namespace AuthServer.Main.Controllers;
 
@@ -17,17 +20,29 @@ public class AccountController : Controller
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IEmailSender _emailSender;
     private readonly ILogger<AccountController> _logger;
+    private readonly IInspireUser _inspireUser;
+    private readonly OtpService _otpService;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IEmailSender emailSender,
-        ILogger<AccountController> logger)
+        ILogger<AccountController> logger,
+        IInspireUser inspireUser,
+        OtpService otpService,
+        IMapper mapper,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
         _logger = logger;
+        _inspireUser = inspireUser;
+        _otpService = otpService;
+        _mapper = mapper;
+        _configuration = configuration;
     }
 
     [HttpGet]
@@ -46,6 +61,53 @@ public class AccountController : Controller
         ViewData["ReturnUrl"] = model.ReturnUrl;
         if (ModelState.IsValid)
         {
+             // Check is user valid
+             var loginInput = new LoginInputModel { Username = model.Username, Password = model.Password, RememberLogin = model.RememberLogin, ReturnUrl = model.ReturnUrl };
+            var validUser = await _inspireUser.ValidateUserAsync(loginInput);
+            if (validUser.Status != 2)
+            {
+                // await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, validUser.Message));
+                ModelState.AddModelError(string.Empty, validUser.Message);
+                return View(model);
+            }
+
+            // Force to reset Password
+            if (validUser.ResetDays == 0)
+            {
+                TempData["userPk"] = validUser.UserPK.ToString();
+                TempData["userName"] = validUser.UserName;
+                TempData["returnUrl"] = model.ReturnUrl;
+                return RedirectToAction(nameof(ChangePassword));
+            }
+
+            var ApplicationUser = await _inspireUser.GetApplicationUserAsync(validUser.UserName);
+            var isApplicationUser = await _inspireUser.SyncApplicationUserAsync(ApplicationUser, model.Password);
+            TempData["UserID"] = ApplicationUser.UserName;
+            TempData["UserEmail"] = ApplicationUser.Email;
+            TempData["MfaStatus"] = ApplicationUser.MfaStatus;
+            ViewData["UserEmail"] = ApplicationUser.Email;
+
+             if (isApplicationUser && ApplicationUser.IsMfaEnabledCompany == "Y" && ApplicationUser.IsMfaEnabledUser && ApplicationUser.MfaStatus == "Pending")
+            {
+                if (ApplicationUser.MfaType == "AUTHAPP")
+                {
+                    return RedirectToAction(nameof(EnableAuthenticator), new { returnUrl = model.ReturnUrl }); // Renamed from SetUpAuthApp
+                }
+
+                if (ApplicationUser.MfaType == "EMAIL")
+                {
+                    var user = await _userManager.FindByNameAsync(ApplicationUser.UserName);
+                    if (user != null)
+                    {
+                        var otp = await _otpService.GenerateAndStoreOtp(user.Id);
+                        // _emailSender.SendAuthEmail(ApplicationUser.UserName, otp); // Assuming SendAuthEmail exists on concrete type or add it
+                         await _emailSender.SendEmailAsync(user.Email!, "OTP", otp);
+                        return RedirectToAction(nameof(RegisterEmailOtp), new { returnUrl = model.ReturnUrl });
+                    }
+                }
+               // ModelState.AddModelError("UnKnown", "Unknown MFA Type");
+            }
+
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: false);
             if (result.Succeeded)
             {
@@ -58,10 +120,24 @@ public class AccountController : Controller
                 _logger.LogInformation("User logged in.");
                 return LocalRedirect(model.ReturnUrl ?? "/");
             }
-            if (result.RequiresTwoFactor)
+             if (result.RequiresTwoFactor && ApplicationUser.IsMfaEnabledUser && ApplicationUser.MfaStatus == "Completed")
             {
-                return RedirectToAction(nameof(LoginWith2fa), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin });
+                 if (ApplicationUser.MfaType == "EMAIL")
+                {
+                     var user = await _userManager.FindByNameAsync(ApplicationUser.UserName);
+                     if(user != null) {
+                        var otp = await _otpService.GenerateAndStoreOtp(user.Id);
+                        await _emailSender.SendEmailAsync(user.Email!, "OTP", otp);
+                        return RedirectToAction(nameof(VerifyEmailOtp), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin });
+                     }
+                }
+
+                if (ApplicationUser.MfaType == "AUTHAPP")
+                {
+                    return RedirectToAction(nameof(LoginWith2fa), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin }); // VerifyAuthApp maps to standard LoginWith2fa
+                }
             }
+
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("User account locked out.");
@@ -301,30 +377,102 @@ public class AccountController : Controller
     [HttpPost]
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    public async Task<IActionResult> ForgotPassword(PasswordRecoveryViewModel model, string submit)
     {
-        if (ModelState.IsValid)
+         if (submit == "ForgotPassword")
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+             if (string.IsNullOrEmpty(model.UserID))
             {
-                // Don't reveal that the user does not exist or is not confirmed
-                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                ModelState.AddModelError("Question", "User ID should not be blank");
+                return View("ForgotPassword");
             }
+             // var ApplicationUser = await _inspireUser.GetApplicationUserAsync(model.UserID);
+             // Logic adaptation: Reference checks ApplicationUser.UserId != null but effectively it checks if user exists in legacy DB
+            var appUser = await _inspireUser.GetApplicationUserAsync(model.UserID);
 
-            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { code }, protocol: Request.Scheme);
-
-            if (!string.IsNullOrEmpty(user.Email))
+            if (appUser.UserId != null)
             {
-                await _emailSender.SendEmailAsync(user.Email, "Reset Password",
-                    $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                return RedirectToAction("ForgotPasswordQuestion", new { userId = model.UserID });
             }
+            else
+            {
+                ModelState.AddModelError("Question", "Please choose a question of your choice");
+                var vm = await BuildforgotViewModelAsync("", model.UserID.Trim());
+                return View("ForgotPassword", vm);
+            }
+        }
+        else
+        {
+             return Redirect("/"); // RedirectClientUrl
+        }
+    }
 
-            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> ForgotPasswordQuestion(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            return RedirectToAction("ForgotPassword");
+        }
+        var vms = await BuildforgotViewModelAsync("", userId.Trim());
+        return View(vms);
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPasswordQuestion(PasswordRecoveryViewModel model, string submit)
+    {
+        if (submit == "Cancel")
+        {
+             return Redirect("/");
         }
 
-        return View(model);
+        // build a model so we know what to show on the login page
+        if (!string.IsNullOrEmpty(model.Question))
+        {
+            if (!string.IsNullOrEmpty(model.Answer))
+            {
+                string resetUrl;
+                if (Request.IsHttps)
+                {
+                    resetUrl = string.Format("https://{0}/{1}/{2}", Request.Host.Value, "account", "resetpassword");
+                }
+                else
+                {
+                    resetUrl = string.Format("http://{0}/{1}/{2}", Request.Host.Value, "account", "resetpassword");
+                }
+
+                ApplicationUser appUser = await _inspireUser.ForgotQAVerification(model, resetUrl);
+                string message = appUser.Message ?? "Unknown error";
+                long status = appUser.Status;
+                if (status == 2)
+                {
+                    model.Questions = new SelectList(new List<SelectListItem>());
+                    model.UserID = "$uccess";
+                    return View("ForgotPasswordConfirmation");
+                }
+                else
+                {
+                    ModelState.AddModelError("Question", message);
+                    var vm = await BuildforgotViewModelAsync("", model.UserID.Trim());
+                    return View("ForgotPasswordQuestion", vm);
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("Answer", "Answer should not be blank");
+                var vm = await BuildforgotViewModelAsync("", model.UserID.Trim());
+                return View("ForgotPasswordQuestion", vm);
+            }
+        }
+        else
+        {
+            ModelState.AddModelError("Question", "Please choose a question of your choice");
+            var vm = await BuildforgotViewModelAsync("", model.UserID.Trim());
+            return View("ForgotPasswordQuestion", vm);
+        }
     }
 
     [HttpGet]

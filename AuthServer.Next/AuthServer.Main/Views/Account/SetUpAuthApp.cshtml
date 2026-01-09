@@ -1,0 +1,65 @@
+@model AuthenticatorViewModel
+
+<div class="inspire-layout h-100">
+    <div class="inspire-layout-content h-100 login-bg ">
+        <div class="inspire-layout-content-inner">
+            <div class="d-flex flex-row-reverse p-5">
+                <div class="card w-50">
+                    <div class="card-body p-5">
+                        <h4>Configure Authenticator App</h4>
+                        <p><strong>Complete the following steps to configure your Authenticator App</strong></p>
+                        <ol>
+                            <li>
+                                Install the Microsoft Authenticator or any authenticator app for Windows Phone, Android or iOS.
+                            </li>
+                            <li>
+                                In the App, add an account and choose "Other account".
+                            </li>
+                            <li>
+                                Scan the QR Code image or Enter the Key given below<br />
+                                @if (Model.SharedKey != null)
+                                {
+                                    <p class="authenticatorKey"><strong>@Model.SharedKey</strong></p>
+                                }
+
+                                <div id="qrCode"></div>
+
+                            </li>
+                            <li>
+                                If Account added successfully, Select the newly added account, now you can see six digit code in your Authenticator App. now click "Next".
+                            </li>
+                        </ol>
+                        <div class="d-flex justify-content-center">
+                            <a class="inspire-btn-secondary me-2" href='@Url.Action("VerifyAuthApp", "Account", new{returnUrl =Context.Request.Query["returnUrl"]})'>Next</a>
+                            <a class="inspire-btn-light ms-2" href='@Url.Action("Login", "Account", new{returnUrl =Context.Request.Query["returnUrl"]})'>Cancel</a>
+                        </div>
+                    </div>
+                    <div>
+                        <hr class="text-primary" style="border: solid 0.1px !important;">
+                        <div class="text-primary text-center">
+                            <p class="font-size:16px !important;">SimpleInspire from Simplesolve</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        jQuery(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var generatedQRCode = new QRCode(document.getElementById('qrCode'), {
+                text: model.authenticatorUri,
+                width: 150,
+                height: 150,
+                colorDark: '#000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H,
+            });
+
+            console.log(model, generatedQRCode);
+        });
+    </script>
+}
