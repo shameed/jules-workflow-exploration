@@ -33,4 +33,7 @@ public class ApplicationUser : IdentityUser
 
     public long Logged { get; set; }
     public string? Message { get; set; }
+
+    public string? Otp { get; set; }
+    public DateTime? OtpExpiration { get; set; }
 }

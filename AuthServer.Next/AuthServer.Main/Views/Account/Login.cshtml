@@ -1,6 +1,6 @@
 ﻿@using AuthServer.Main.Resources
-@model AuthServer.Main.Models.AccountViewModels.LoginViewModel
-@inject SignInManager<IdentityUserExtended> SignInManager
+@model AuthServer.Main.ViewModels.Account.LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
 
 @inject LocService SharedLocalizer
 @{

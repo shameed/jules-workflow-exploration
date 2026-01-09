@@ -23,7 +23,7 @@ namespace AuthServer.Main.Services;
 
 public class InspireUser : IInspireUser
 {
-    private readonly UserManager<IdentityUserExtended> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _config;
     private readonly IHttpClientFactory _clientFactory;
     private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class InspireUser : IInspireUser
         }
     }
 
-    public InspireUser(UserManager<IdentityUserExtended> userManager, IConfiguration configuration, IHttpClientFactory clientFactory, IMapper mapper, IEmailSender emailSender)
+    public InspireUser(UserManager<ApplicationUser> userManager, IConfiguration configuration, IHttpClientFactory clientFactory, IMapper mapper, IEmailSender emailSender)
     {
         _userManager = userManager;
         _config = configuration;
@@ -123,7 +123,7 @@ public class InspireUser : IInspireUser
         }
         else
         {
-            var newIdentityUser = new IdentityUserExtended
+            var newIdentityUser = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
                 UserName = appUser.UserName,

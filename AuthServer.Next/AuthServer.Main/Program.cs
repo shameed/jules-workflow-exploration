@@ -25,6 +25,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IInspireUser, InspireUser>();
+builder.Services.AddTransient<OtpService>();
+builder.Services.AddAutoMapper(typeof(Program)); // or specific profile
+builder.Services.AddLocalization();
+builder.Services.AddSingleton<LocService>();
 
 builder.Services.AddOpenIddict()
 
