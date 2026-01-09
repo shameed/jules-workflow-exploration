@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using AutoMapper;
-using Baic.Shared;
+using AuthServer.Main.Common;
 using AuthServer.Main.Models;
-using static Baic.AuthMain.Models.AccountViewModels.ForgotPasswordViewModel;
-using AuthServer.Main.Models.AccountViewModels;
+using static AuthServer.Main.ViewModels.Account.ForgotPasswordViewModel;
+using AuthServer.Main.ViewModels.Account;
 using System;
 
 namespace AuthServer.Main.MappingProfiles
